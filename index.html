@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>À Mon Seul Désir</title>
+<style>
+:root{
+  --ink:#eaf0f8; --soft:#b9cbe0; --muted:#8aa3be; --line:rgba(170,200,232,.32);
+  --serif:"Cormorant Garamond","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; min-height:100vh; color:var(--ink); font-family:var(--serif);
+  background:#03070d url("assets/background.jpg") center/cover fixed no-repeat;
+}
+body::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:radial-gradient(ellipse at 50% 46%, rgba(3,8,16,.55) 0%, rgba(3,8,16,.25) 45%, rgba(3,8,16,.5) 100%);
+}
+.page{position:relative; z-index:1; width:min(780px,100%); margin:0 auto; padding:0 24px 170px}
+
+/* ---------- Title block ---------- */
+.hero{
+  min-height:100vh; display:flex; flex-direction:column;
+  justify-content:center; align-items:center; text-align:center; padding:40px 0 90px;
+}
+h1{
+  margin:0; font-weight:400; font-size:clamp(1.55rem,3.4vw,2.1rem);
+  letter-spacing:.14em; line-height:1.3; text-shadow:0 0 30px rgba(100,165,235,.35);
+}
+.subtitle{margin:14px 0 34px; color:var(--soft); font-style:italic; font-weight:400; font-size:clamp(.95rem,2vw,1.12rem); letter-spacing:.06em}
+.rule{width:54px; height:1px; background:var(--line); margin:0 auto 34px}
+.open-button{
+  border:1px solid var(--line); background:rgba(6,16,30,.45); color:#e6eef9;
+  padding:12px 26px; min-width:176px; cursor:pointer;
+  font:11px/1.4 var(--sans); letter-spacing:.26em; text-transform:uppercase;
+  backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); transition:.3s;
+}
+.open-button:hover,.open-button:focus-visible{border-color:rgba(195,222,250,.8); background:rgba(60,100,145,.25); outline:none; transform:translateY(-1px)}
+.arrow{display:inline-block; margin-left:10px; color:#9dc0e6; transition:transform .4s}
+.open-button[aria-expanded="true"] .arrow{transform:rotate(180deg)}
+
+/* ---------- Vertical letter dropdown ---------- */
+.letter-wrap{display:grid; grid-template-rows:0fr; opacity:0; margin-top:-40px; transition:grid-template-rows .75s ease, opacity .55s ease}
+.letter-wrap.open{grid-template-rows:1fr; opacity:1}
+.letter-clip{overflow:hidden; min-height:0}
+.letter{
+  max-width:900px; margin:0 auto; padding:30px clamp(20px,5vw,52px) 170px;
+  line-height:1.9; font-size:1.13rem; color:#dbe5f1;
+  border-top:1px solid var(--line); border-bottom:1px solid rgba(170,200,232,.16);
+  background:linear-gradient(180deg,rgba(5,12,22,.76),rgba(4,9,17,.68));
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+}
+.letter-close-row{display:flex; justify-content:flex-end; margin:0 0 16px; padding:0 0 8px}
+.letter-close{border:1px solid var(--line); background:rgba(6,16,30,.8); color:#e6eef9; padding:7px 12px; cursor:pointer; font:10px/1.4 var(--sans); letter-spacing:.18em; text-transform:uppercase}
+.letter-close:hover,.letter-close:focus-visible{border-color:rgba(195,222,250,.8); outline:none}
+.dots{display:flex; justify-content:center; gap:10px; margin-bottom:26px}
+.dot{width:9px; height:9px; border-radius:50%; border:1px solid rgba(170,200,232,.55); background:transparent; padding:0; cursor:pointer; transition:.25s}
+.dot:hover,.dot:focus-visible{background:rgba(170,200,232,.45); outline:none}
+.dot.on{background:#bcd8f5; border-color:#bcd8f5; box-shadow:0 0 10px rgba(130,185,240,.6)}
+
+.leaf{display:none}
+.leaf.active{display:block; animation:fadein-right .34s ease}
+.leaf.active.slide-from-left{animation:fadein-left .34s ease}
+@keyframes fadein-right{from{opacity:0; transform:translateX(18px)}to{opacity:1; transform:none}}
+@keyframes fadein-left{from{opacity:0; transform:translateX(-18px)}to{opacity:1; transform:none}}
+.kicker{text-align:center; font:10px/1.4 var(--sans); letter-spacing:.32em; text-transform:uppercase; color:var(--muted); margin-bottom:12px}
+.leaf h2{text-align:center; font-weight:400; font-size:clamp(1.3rem,3vw,1.65rem); letter-spacing:.07em; line-height:1.35; margin:0 0 8px; color:#f2f6fc}
+.leaf .sub{text-align:center; font-style:italic; color:var(--soft); margin:0 0 28px; font-size:1.02rem}
+.leaf p{margin:0 0 1.15em}
+.leaf p.gap{margin-top:1.6em}
+blockquote{
+  margin:1.5em 0; padding:.4em 0 .4em 1.2em; border-left:2px solid rgba(170,200,232,.45);
+  font-style:italic; font-size:1.18rem; color:#eef4fb; line-height:1.7;
+}
+.lines p{margin:0 0 .35em; padding-left:1.1em; border-left:1px solid var(--line)}
+figure{margin:2em auto; text-align:center}
+figure img{max-width:100%; height:auto; display:block; margin:0 auto; border:1px solid var(--line); box-shadow:0 10px 36px rgba(0,0,0,.5)}
+figcaption{margin-top:10px; font-style:italic; font-size:.95rem; color:var(--soft); line-height:1.5}
+.gallery{display:grid; grid-template-columns:repeat(2,1fr); gap:6px 24px; align-items:start; margin:1.6em 0 2em}
+.gallery figure{margin:.8em 0}
+.gallery figure.wide{grid-column:1 / -1; max-width:60%; margin-left:auto; margin-right:auto}
+.sign{margin-top:2.2em; text-align:right; color:var(--soft); font-style:italic; line-height:1.6}
+.sign b{font-weight:400; color:#eef4fb; font-style:normal; letter-spacing:.04em}
+.closing{font-style:italic; color:#e7eff9}
+
+/* ---------- Page navigation ---------- */
+.pager{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:34px; padding-top:22px; border-top:1px solid rgba(170,200,232,.18)}
+.nav-btn{
+  border:1px solid var(--line); background:rgba(6,16,30,.5); color:#e6eef9; cursor:pointer;
+  padding:11px 20px; min-width:118px; font:10.5px/1.4 var(--sans); letter-spacing:.22em; text-transform:uppercase; transition:.3s;
+}
+.nav-btn:hover:not(:disabled),.nav-btn:focus-visible{border-color:rgba(195,222,250,.8); background:rgba(60,100,145,.28); outline:none}
+.nav-btn:disabled{opacity:.28; cursor:default}
+.count{font:10px/1.4 var(--sans); letter-spacing:.22em; color:var(--muted); text-align:center}
+
+/* ---------- Draggable music player ---------- */
+.player{
+  position:fixed; z-index:8; left:16px; bottom:16px; transform:none;
+  width:min(470px,calc(100% - 32px)); padding:10px 12px 9px;
+  border:1px solid rgba(170,200,232,.3); background:rgba(4,11,21,.9);
+  box-shadow:0 12px 36px rgba(0,0,0,.35); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  font-family:var(--sans); border-radius:2px;
+}
+.track-row{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px; min-width:0}
+.drag-handle{
+  flex:0 0 auto; width:22px; height:25px; padding:0; border:0; border-radius:3px;
+  background:transparent; color:var(--muted); font:18px/1 var(--sans); letter-spacing:-3px;
+  cursor:grab; user-select:none; -webkit-user-select:none; touch-action:none;
+}
+.drag-handle:hover,.drag-handle:focus-visible{color:#f2f7ff; background:rgba(90,135,185,.22); outline:1px solid var(--line)}
+.drag-handle:active{cursor:grabbing}
+.player.dragging{user-select:none; -webkit-user-select:none; box-shadow:0 16px 42px rgba(0,0,0,.5); border-color:rgba(195,222,250,.62)}
+.track-name{font:italic 14px/1.3 var(--serif); color:#dfe9f5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; flex:1}
+.status{font-size:9px; letter-spacing:.16em; color:var(--muted); flex:none}
+.controls{display:flex; align-items:center; gap:5px; flex-wrap:wrap}
+.btn{
+  flex:0 0 auto; width:31px; height:31px; border:1px solid var(--line); border-radius:50%;
+  background:rgba(40,70,105,.28); color:#e6f0fc; cursor:pointer; font-size:12px; line-height:1;
+  display:inline-flex; align-items:center; justify-content:center; transition:background .2s,border-color .2s,color .2s; padding:0;
+}
+.btn:hover,.btn:focus-visible{background:rgba(90,135,185,.35); outline:none}
+.btn.main{width:37px; height:37px; font-size:13px}
+.btn.active,.btn[aria-pressed="true"]{background:rgba(114,162,211,.28); border-color:rgba(180,215,248,.8); color:#fff; box-shadow:0 0 10px rgba(130,185,240,.12)}
+.spacer{flex:1; min-width:2px}
+.vol{display:flex; align-items:center; gap:5px; margin-left:auto}
+input[type=range]{accent-color:#9cc0e8; cursor:pointer; min-width:0}
+#volume{width:70px}
+.seek{display:flex; align-items:center; gap:8px; margin-top:8px; color:var(--muted); font-size:9px; letter-spacing:.06em}
+#seek{flex:1}
+
+@media(max-width:600px){
+  .gallery{grid-template-columns:1fr}
+  .gallery figure.wide{max-width:100%}
+  .letter{font-size:1.04rem}
+  .nav-btn{min-width:92px; padding:10px 12px; letter-spacing:.14em}
+  .player{left:10px;bottom:10px;width:calc(100% - 20px);padding:9px 9px 8px}
+  #volume{width:54px}
+  .controls{gap:4px}
+  .btn{width:29px;height:29px;font-size:11px}
+  .btn.main{width:34px;height:34px}
+  .status{font-size:8px;letter-spacing:.1em}
+  .letter{padding-bottom:170px}
+}
+@media(max-width:370px){.vol #volume{width:42px}.btn{width:27px;height:27px}.btn.main{width:32px;height:32px}.controls{gap:3px}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<main class="page">
+  <section class="hero" aria-labelledby="title">
+    <h1 id="title">À Mon Seul Désir.</h1>
+    <p class="subtitle">To my Only Desire................</p>
+    <div class="rule" aria-hidden="true"></div>
+    <button class="open-button" id="openLetter" aria-expanded="false" aria-controls="letterPanel">
+      <span id="openLabel">Open the letter</span><span class="arrow" aria-hidden="true">→</span>
+    </button>
+  </section>
+
+  <section class="letter-wrap" id="letterPanel" aria-hidden="true">
+    <div class="letter-clip">
+      <article class="letter" id="letter">
+
+        <div class="letter-close-row"><button class="letter-close" id="closeLetter" type="button">Close letter ✕</button></div>
+        <div class="dots" id="dots" role="tablist" aria-label="Pages"></div>
+
+        <!-- ================= PAGE 1 ================= -->
+        <section class="leaf active" data-title="Greetings">
+          <div class="kicker">I</div>
+          <h2>Greetings</h2>
+          <p class="sub">Greetings, everyone!</p>
+          <p>I am Jonathan Hanjaya, a structural engineer from the IndoCAD Southernwaters Team. Yup, the one you know as the “milk” guy. 🥛</p>
+          <p>If you are reading this email, it means my time at this company has come to an end, and I am preparing to begin the next stage of my life’s journey.</p>
+          <p>My journey here began as an engineer with the Amazon Team, led by Steven, before eventually bringing me to the Southernwaters Team, led by Rahmia. Looking back, it is remarkable how one journey can take us through different places, introduce us to different people, and leave us with experiences we never expected. What began as one chapter of my professional life has become a collection of memories, lessons, challenges, and moments shared with all of you.</p>
+          <p>Before I turn the page to whatever comes next, I would like to share a few thoughts that have been on my mind lately.</p>
+        </section>
+
+        <!-- ================= PAGE 2 ================= -->
+        <section class="leaf" data-title="Evolution">
+          <div class="kicker">II</div>
+          <h2>Evolution</h2>
+          <p class="sub">From the earliest life to humanity</p>
+          <figure><img src="assets/evolution.jpg" alt="Silhouettes of life forms, from the earliest organisms to humans, climbing along a DNA helix"></figure>
+          <p>Life on Earth has changed over hundreds of millions of years, giving rise to the extraordinary diversity we see today. From the earliest forms of life in the sea, to the first creatures on land, to countless generations of change that eventually gave rise to humanity, it is a journey so vast that no single individual can witness all of it within a lifetime.</p>
+          <p>Yet each of us is a small part of that journey, contributing in our own way to a world that will keep changing long after we are gone.</p>
+          <p>Perhaps our own lives are much the same. We arrive, we learn, we struggle, we grow, and eventually we move on. We cannot stay in one place forever, nor can we fully know what our presence will mean to others.</p>
+          <p>But while we are here, we can choose to make our time meaningful. That brings me to a few thoughts that have stayed with me along the way.</p>
+        </section>
+
+        <!-- ================= PAGE 3 ================= -->
+        <section class="leaf" data-title="On Life, Happiness, and Possibility">
+          <div class="kicker">III</div>
+          <h2>On Life, Happiness,<br>and Possibility</h2>
+          <p class="sub">&nbsp;</p>
+          <p>They are not rules I expect anyone to follow, only reflections that have gradually shaped the way I see life.</p>
+          <blockquote>“A life that lives without doing anything is the same as a slow death.”</blockquote>
+          <p>To me, life should be more than simply existing. It is about our willingness to learn, to grow, and to discover what we are capable of becoming. This does not mean we must constantly work, chase achievements, or prove our worth to others. It means never abandoning our willingness to discover what life has yet to teach us.</p>
+          <p>And somewhere along that road, we meet happiness.</p>
+          <blockquote>“If happiness had a form, what would it look like? Perhaps it would be something like glass, because we do not always notice it until the light catches it at just the right angle.”</blockquote>
+          <figure><img src="assets/glass.jpg" alt="A wine glass shattering, fragments catching the light"></figure>
+          <p>Glass can also shatter, and it is often then that we see how much light it was carrying. Happiness works the same way. It is often already beside us, hidden in ordinary conversations, shared laughter, and the kindness we give and receive. We do not always need to search for something extraordinary.</p>
+          <p>Sometimes we only need to recognize what has been there all along. The people around us and the small moments we share may hold more meaning than we realize.</p>
+          <figure><img src="assets/heart.jpg" alt="Two hands forming a heart around the setting sun over a field of poppies"></figure>
+          <p>That is part of what makes us human: our ability to turn ordinary moments into something meaningful through the strength and kindness we share with others.</p>
+          <blockquote>“With the potential within us, we can demonstrate to the world the strength and kindness that define what it means to be human.”</blockquote>
+          <figure><img src="assets/brain.jpg" alt="A luminous human head and brain, with DNA and the figures of human evolution behind it"></figure>
+          <p>I believe every human possesses an inner god called possibility: the power to transcend the present, imagine a future that does not yet exist, and strive to bring it into reality.</p>
+          <p>Human history is a record of that power at work. Our ancestors learned to make fire and shape tools. Navigators crossed the open Pacific guided only by the stars, the waves, and the flight of birds. Within a single century, humanity went from the first powered flight at Kitty Hawk in 1903 to footprints on the Moon in 1969. Each step began as something people were told was impossible, and each was taken by someone willing to imagine it anyway.</p>
+          <p>Today, that exploration has only widened. We send rovers to roam the surface of Mars. The James Webb Space Telescope looks back toward the early universe. The Voyager probes, launched in the 1970s, have travelled beyond the Sun’s influence into interstellar space. We reach the deepest trenches of the ocean, decode the genes that make us who we are, and connect across continents in an instant. The inner god of possibility is not a metaphor; it is the reason any of this exists.</p>
+          <p>So never be afraid to believe in that possibility. With willpower, patience, and the courage to take the first step, a path may open where none seemed to exist before. We may not change the whole world in our lifetime. But we can change a little of it for the better, and that change may continue long after we have moved on.</p>
+          <p>Life, happiness, strength, possibility, and willpower may seem like different subjects, yet to me they are tied together by a single question: what do we choose to do with the life we have been given, the world we experience, and the possibilities within us?</p>
+          <p>It was while reflecting on this question that I found myself drawn to a remarkable series of medieval tapestries.</p>
+        </section>
+
+        <!-- ================= PAGE 4 ================= -->
+        <section class="leaf" data-title="The Lady and the Unicorn">
+          <div class="kicker">IV</div>
+          <h2>The Lady and the Unicorn</h2>
+          <p class="sub">&nbsp;</p>
+          <p>Among the works of art that have survived the centuries is a series of medieval tapestries known as The Lady and the Unicorn, created around the turn of the sixteenth century and preserved today at the Musée de Cluny in Paris.</p>
+          <p>Five of the six are commonly associated with the five senses. Each shows the lady experiencing a different part of the world, surrounded by intricate patterns, animals, and flowers.</p>
+          <div class="gallery">
+            <figure><img src="assets/taste.jpg" alt="Taste, from The Lady and the Unicorn"><figcaption>In Taste, the lady reaches for a sweet.</figcaption></figure>
+            <figure><img src="assets/hearing.jpg" alt="Hearing, from The Lady and the Unicorn"><figcaption>In Hearing, she plays a small organ.</figcaption></figure>
+            <figure><img src="assets/smell.jpg" alt="Smell, from The Lady and the Unicorn"><figcaption>In Smell, she arranges flowers.</figcaption></figure>
+            <figure><img src="assets/touch.jpg" alt="Touch, from The Lady and the Unicorn"><figcaption>In Touch, she holds the unicorn’s horn.</figcaption></figure>
+            <figure class="wide"><img src="assets/sight.jpg" alt="Sight, from The Lady and the Unicorn"><figcaption>And in Sight, the unicorn gazes into a mirror.</figcaption></figure>
+          </div>
+          <p>Together they remind us how we encounter the world through our senses. But experiencing the world is only part of being human. We may see the same thing yet understand it differently. We may hear the same words and interpret them in different ways. We may share the same experiences without reaching the same conclusions.</p>
+          <p>Our senses let us experience the world, but they do not decide what kind of people we become. That is shaped by what we learn from our experiences, how we treat others, and the choices we make. And this is where my earlier thoughts begin to come together. Happiness may have been beside us all along, waiting to be recognized. Our strength and kindness shape how we treat the people around us. Our inner possibility lets us imagine something better, and our willpower gives us the courage to pursue it.</p>
+          <p>But after experiencing everything the world has to offer, one question remains: what, ultimately, do we choose to desire?</p>
+        </section>
+
+        <!-- ================= PAGE 5 ================= -->
+        <section class="leaf" data-title="À mon seul désir">
+          <div class="kicker">V</div>
+          <h2>À mon seul désir</h2>
+          <p class="sub">To My Only Desire</p>
+          <figure><img src="assets/desire.jpg" alt="À mon seul désir, the sixth tapestry: the lady before a blue tent"></figure>
+          <p>The sixth tapestry bears a mysterious inscription, À mon seul désir, commonly translated as “To my only desire.” Unlike the first five, its meaning is far less certain.</p>
+          <p>The lady stands before a blue tent while her attendant holds open a casket. She appears to be handling a necklace, though the precise meaning of her gesture is still debated. Some interpret the scene as a renunciation of worldly pleasures, while others see an expression of free will or personal desire.</p>
+          <p>For me, that uncertainty is exactly what makes it so compelling. The first five tapestries show how we experience the world. The sixth asks what we value and what we choose to pursue. Our lives are defined not only by what we see, hear, touch, or accomplish, but also by what we believe in, what we are willing to work for, and what we choose to give to others.</p>
+          <p>We can use our experiences to build walls between ourselves, or to cultivate understanding. We can let our differences divide us, or try to understand the experiences that made each of us who we are.</p>
+          <p>For me, my À mon seul désir is this: I want to believe in every individual’s possibility, and in humanity’s ability to understand one another.</p>
+          <p>Peace cannot be sustained by force alone. It must also be built through understanding. We have different personalities, ambitions, beliefs, and ways of seeing the world. We may disagree, misunderstand one another, and sometimes struggle to find common ground. But I hope our differences never stop us from recognizing the humanity we share. Perhaps our greatest achievement will not be a world without differences, but one in which differences no longer keep us from understanding one another. And that may be another form of evolution: not merely changing who we are, but growing in our capacity to understand each other.</p>
+          <p>Possibility gives us something to believe in. Desire gives that possibility direction. Willpower gives us the courage to take the first step. We cannot control every circumstance or know where every path will lead, but we can choose what we believe in, what we are willing to work for, and what kind of future we hope to create. That is what À mon seul désir means to me: not a promise that the path will always be easy, but a reminder that each of us has a part to play in shaping the future.</p>
+        </section>
+
+        <!-- ================= PAGE 6 ================= -->
+        <section class="leaf" data-title="Until Our Paths Cross Again">
+          <div class="kicker">VI</div>
+          <h2>Until Our Paths Cross Again</h2>
+          <p class="sub">&nbsp;</p>
+          <p>Which brings me back to where I began: this chapter is closing, and I am leaving.</p>
+          <p>Soon, the moments we shared will become memories. The conversations, the laughter, the challenges, and even the disagreements will drift into the past. Life will move forward, and new people and new stories will take their place. That is how it should be.</p>
+          <p>I do not expect to be remembered forever. Time softens most things. But I do not think that makes our time together any less meaningful. Perhaps something will stay with you, even if you cannot say where it came from: a lesson learned, a kindness passed on, a different way of seeing a problem. You might forget my words entirely and still carry the feeling behind them. I may never know, and that is all right. Evolution does not depend on any one individual being remembered. It continues through what is passed forward, often in ways no one could have predicted.</p>
+          <p>So, as our paths part, I hope our time together added something worthwhile to your journey, just as yours did to mine. That is more than enough for me.</p>
+          <p>I also want to thank some of you by name. Steven, thank you for giving me my start here with the Amazon Team and for trusting me with real responsibility early on. Rahmia, thank you for your guidance and patience on the Southernwaters Team. To my teammates, thank you for the shared work, the problem-solving, and the laughs between tasks. And yes, thank you for the milk jokes. 🥛</p>
+          <p>If you feel like it, I would love to hear your answer to one question: what is your À mon seul désir, the possibility you believe in or the future you hope to create? You can reply to me anytime, even with a single line. I would be glad to read it.</p>
+          <p>Thank you for the time we shared: the lessons, the conversations, the challenges, and the moments of happiness. Thank you for letting me be a part of your journeys, just as you have been a part of mine. Even where we did not always understand one another, I hope we keep learning to.</p>
+          <p class="gap closing">Farewell, everyone.</p>
+          <p>May we continue to evolve, not only in what we know and accomplish, but also in our strength, our kindness, and our understanding of one another. And when our paths cross again, perhaps we will find that we have all become someone a little different from who we are today.</p>
+          <p>Until then, never be afraid to believe in the possibilities within yourselves, or to recognize them in others.</p>
+          <p class="closing">To the possibilities that lie ahead, to the memories we leave behind, and to the humanity that connects us all.</p>
+          <div class="sign">With sincere gratitude,<br><b>Jonathan Hanjaya</b><br>Structural Engineer<br>IndoCAD Southernwaters Team</div>
+        </section>
+
+        <!-- ---------- Previous / Next ---------- -->
+        <nav class="pager" aria-label="Page navigation">
+          <button class="nav-btn" id="prevPage">← Previous</button>
+          <div class="count" id="pageCount">1 / 6</div>
+          <button class="nav-btn" id="nextPage">Next →</button>
+        </nav>
+
+      </article>
+    </div>
+  </section>
+</main>
+
+<!-- ---------- Music player ---------- -->
+<section class="player" aria-label="Music player">
+  <div class="track-row">
+    <button class="drag-handle" id="dragHandle" type="button" aria-label="Move music player" title="Drag to move; focus and use arrow keys to reposition" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown">⠿</button>
+    <div class="track-name" id="trackName">—</div>
+    <div class="status" id="status">STOPPED</div>
+  </div>
+  <div class="controls">
+    <button class="btn" id="prev" type="button" aria-label="Previous track" title="Previous track">⏮</button>
+    <button class="btn main" id="play" type="button" aria-label="Play" title="Play / Pause">▶</button>
+    <button class="btn" id="stop" type="button" aria-label="Stop" title="Stop">■</button>
+    <button class="btn" id="next" type="button" aria-label="Next track" title="Next track">⏭</button>
+    <button class="btn active" id="loop" type="button" aria-label="Repeat playlist" aria-pressed="true" title="Repeat playlist">🔁</button>
+    <button class="btn" id="shuffle" type="button" aria-label="Shuffle off" aria-pressed="false" title="Shuffle off">🔀</button>
+    <div class="spacer"></div>
+    <div class="vol">
+      <button class="btn" id="mute" type="button" aria-label="Mute" title="Mute / Unmute">🔊</button>
+      <input id="volume" type="range" min="0" max="100" value="70" aria-label="Volume">
+    </div>
+  </div>
+  <div class="seek">
+    <span id="elapsed">0:00</span>
+    <input id="seek" type="range" min="0" max="1000" value="0" aria-label="Seek through track">
+    <span id="duration">0:00</span>
+  </div>
+</section>
+
+<audio id="bgm" preload="metadata" playsinline></audio>
+
+<script>
+/* ---------- Image diagnostics ---------- */
+// If the site is opened without its assets folder, show a clear label rather than a blank image.
+document.querySelectorAll('img').forEach(img=>{
+  img.addEventListener('error',()=>{
+    if(img.dataset.loadFailed) return;
+    img.dataset.loadFailed='true';
+    const path=img.getAttribute('src')||'image';
+    img.alt='Image unavailable: '+path+' (keep the assets folder beside index.html)';
+    img.style.minHeight='72px';
+    img.style.padding='18px';
+    img.style.background='rgba(8,18,32,.8)';
+    img.style.color='#dbe5f1';
+    img.style.border='1px solid rgba(170,200,232,.32)';
+  },{once:true});
+});
+
+
+/* ---------- Vertical letter dropdown ---------- */
+const openBtn=document.getElementById('openLetter'),
+      panel=document.getElementById('letterPanel'),
+      closeBtn=document.getElementById('closeLetter'),
+      openLabel=document.getElementById('openLabel');
+function setLetterOpen(open,restoreFocus=false){
+  openBtn.setAttribute('aria-expanded',String(open));
+  panel.classList.toggle('open',open);
+  panel.setAttribute('aria-hidden',String(!open));
+  openLabel.textContent=open?'Close the letter':'Open the letter';
+  if(open){
+    window.setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}),120);
+  }else{
+    if(restoreFocus)openBtn.focus({preventScroll:true});
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}
+openBtn.addEventListener('click',()=>setLetterOpen(openBtn.getAttribute('aria-expanded')!=='true'));
+closeBtn.addEventListener('click',()=>setLetterOpen(false,true));
+/* ---------- Pages ---------- */
+const leaves=[...document.querySelectorAll('.leaf')],
+      dotsBox=document.getElementById('dots'),
+      prevPage=document.getElementById('prevPage'),
+      nextPage=document.getElementById('nextPage'),
+      pageCount=document.getElementById('pageCount');
+let cur=0;
+leaves.forEach((lf,i)=>{
+  const d=document.createElement('button');
+  d.className='dot'; d.setAttribute('role','tab');
+  d.setAttribute('aria-label','Page '+(i+1)+': '+lf.dataset.title); d.title=lf.dataset.title;
+  d.addEventListener('click',()=>go(i));
+  dotsBox.appendChild(d);
+});
+function go(i,scroll=true){
+  const old=cur;
+  cur=Math.max(0,Math.min(leaves.length-1,i));
+  leaves.forEach((lf,k)=>{
+    lf.classList.toggle('active',k===cur);
+    lf.classList.toggle('slide-from-left',k===cur&&cur<old);
+  });
+  [...dotsBox.children].forEach((d,k)=>{d.classList.toggle('on',k===cur); d.setAttribute('aria-selected',String(k===cur));});
+  prevPage.disabled=cur===0;
+  nextPage.disabled=cur===leaves.length-1;
+  pageCount.textContent=(cur+1)+' / '+leaves.length;
+  if(scroll) panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+prevPage.addEventListener('click',()=>go(cur-1));
+nextPage.addEventListener('click',()=>go(cur+1));
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&openBtn.getAttribute('aria-expanded')==='true'){
+    setLetterOpen(false,true); return;
+  }
+  if(openBtn.getAttribute('aria-expanded')!=='true')return;
+  if(e.target.tagName==='INPUT'||e.target.tagName==='BUTTON')return;
+  if(e.key==='ArrowRight')go(cur+1);
+  if(e.key==='ArrowLeft')go(cur-1);
+});
+go(0,false);
+
+/* ---------- Music player: native playback, no Web Audio processing ---------- */
+const tracks=[
+  {src:'assets/01-re-i-am.mp3',           name:'RE:I AM — Aimer × Hiroyuki Sawano (Zarauken Orchestration)'},
+  {src:'assets/02-ryuusei-no-namida.mp3', name:'Ryuusei no Namida — Hiroyuki Sawano (9thMob)'},
+  {src:'assets/03-oym-pf.mp3',            name:'OYM-PF — Hiroyuki Sawano'},
+  {src:'assets/04-on-your-mark.mp3',      name:'ON YOUR MARK — Hiroyuki Sawano'}
+];
+const $=id=>document.getElementById(id),
+      audio=$('bgm'), playBtn=$('play'), stopBtn=$('stop'), muteBtn=$('mute'),
+      vol=$('volume'), seek=$('seek'), statusEl=$('status'), nameEl=$('trackName'),
+      elapsed=$('elapsed'), duration=$('duration'), loopBtn=$('loop'), shuffleBtn=$('shuffle');
+let idx=0, manuallyStopped=false, isSeeking=false;
+let loopMode='all', shuffleEnabled=false, shuffleHistory=[0], shuffleCursor=0, shufflePlayed=new Set([0]);
+
+/* ---------- Drag-to-move player (mouse, touch, and keyboard) ---------- */
+const player=document.querySelector('.player'), dragHandle=$('dragHandle');
+let dragState=null;
+const playerPositionKey='amonseuldesir-player-position-v1';
+function clampPlayerPosition(left,top){
+  const maxLeft=Math.max(0,window.innerWidth-player.offsetWidth);
+  const maxTop=Math.max(0,window.innerHeight-player.offsetHeight);
+  return {left:Math.min(Math.max(0,left),maxLeft),top:Math.min(Math.max(0,top),maxTop)};
+}
+function setPlayerPosition(left,top,save=false){
+  const pos=clampPlayerPosition(left,top);
+  player.style.left=pos.left+'px';
+  player.style.top=pos.top+'px';
+  player.style.right='auto';
+  player.style.bottom='auto';
+  if(save){
+    try{localStorage.setItem(playerPositionKey,JSON.stringify(pos));}catch(_err){/* Storage may be unavailable for local files. */}
+  }
+}
+try{
+  const savedPosition=JSON.parse(localStorage.getItem(playerPositionKey)||'null');
+  if(savedPosition&&Number.isFinite(savedPosition.left)&&Number.isFinite(savedPosition.top)){
+    setPlayerPosition(savedPosition.left,savedPosition.top,false);
+  }
+}catch(_err){/* Use the default bottom-left position when storage is unavailable. */}
+dragHandle.addEventListener('pointerdown',e=>{
+  if(e.pointerType==='mouse'&&e.button!==0)return;
+  const rect=player.getBoundingClientRect();
+  dragState={pointerId:e.pointerId,offsetX:e.clientX-rect.left,offsetY:e.clientY-rect.top};
+  // Convert from bottom-anchored CSS to explicit viewport coordinates without jumping.
+  player.style.left=rect.left+'px'; player.style.top=rect.top+'px';
+  player.style.right='auto'; player.style.bottom='auto';
+  player.classList.add('dragging');
+  try{dragHandle.setPointerCapture(e.pointerId);}catch(_err){}
+  e.preventDefault();
+});
+dragHandle.addEventListener('pointermove',e=>{
+  if(!dragState||e.pointerId!==dragState.pointerId)return;
+  setPlayerPosition(e.clientX-dragState.offsetX,e.clientY-dragState.offsetY,false);
+});
+function finishPlayerDrag(e){
+  if(!dragState||(e&&e.pointerId!==dragState.pointerId))return;
+  dragState=null; player.classList.remove('dragging');
+  const rect=player.getBoundingClientRect();
+  setPlayerPosition(rect.left,rect.top,true);
+}
+dragHandle.addEventListener('pointerup',finishPlayerDrag);
+dragHandle.addEventListener('pointercancel',finishPlayerDrag);
+dragHandle.addEventListener('keydown',e=>{
+  const step=e.shiftKey?5:20;
+  const rect=player.getBoundingClientRect();
+  let left=rect.left,top=rect.top;
+  if(e.key==='ArrowLeft')left-=step;
+  else if(e.key==='ArrowRight')left+=step;
+  else if(e.key==='ArrowUp')top-=step;
+  else if(e.key==='ArrowDown')top+=step;
+  else return;
+  e.preventDefault();setPlayerPosition(left,top,true);
+});
+window.addEventListener('resize',()=>{
+  const rect=player.getBoundingClientRect();
+  // Only switch to coordinate positioning after the player has been moved or restored.
+  if(player.style.top||player.style.left!==''&&player.style.bottom==='auto')setPlayerPosition(rect.left,rect.top,true);
+});
+const fmt=s=>Number.isFinite(s)&&s>=0
+  ? Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0')
+  : '0:00';
+const setStatus=t=>{statusEl.textContent=t;};
+function playbackErrorMessage(err){
+  if(err&&err.name==='NotAllowedError')return 'CLICK PLAY TO START';
+  if(err&&err.name==='NotSupportedError')return 'UNSUPPORTED AUDIO';
+  return 'PLAYBACK ERROR';
+}
+function icon(){
+  muteBtn.textContent=(audio.muted||audio.volume===0)?'🔇':'🔊';
+  muteBtn.setAttribute('aria-label',(audio.muted||audio.volume===0)?'Unmute':'Mute');
+  muteBtn.title=(audio.muted||audio.volume===0)?'Unmute':'Mute';
+}
+function syncLoopButton(){
+  const info={
+    all:{text:'🔁',label:'Repeat playlist',title:'Repeat playlist: on'},
+    one:{text:'🔂',label:'Repeat current track',title:'Repeat current track: on'},
+    off:{text:'↻',label:'Repeat off',title:'Repeat is off'}
+  }[loopMode];
+  loopBtn.textContent=info.text;
+  loopBtn.setAttribute('aria-label',info.label);
+  loopBtn.title=info.title;
+  loopBtn.setAttribute('aria-pressed',String(loopMode!=='off'));
+  loopBtn.classList.toggle('active',loopMode!=='off');
+  audio.loop=loopMode==='one';
+}
+function syncShuffleButton(){
+  shuffleBtn.classList.toggle('active',shuffleEnabled);
+  shuffleBtn.setAttribute('aria-pressed',String(shuffleEnabled));
+  shuffleBtn.setAttribute('aria-label',shuffleEnabled?'Shuffle on':'Shuffle off');
+  shuffleBtn.title=shuffleEnabled?'Shuffle: on':'Shuffle: off';
+}
+function resetShuffleHistory(){shuffleHistory=[idx];shuffleCursor=0;shufflePlayed=new Set([idx]);}
+function setTrackSource(i){
+  idx=((i%tracks.length)+tracks.length)%tracks.length;
+  manuallyStopped=false;
+  audio.pause();
+  nameEl.textContent=tracks[idx].name;
+  seek.value='0'; elapsed.textContent='0:00'; duration.textContent='0:00';
+  // Keep the audio URL relative to index.html, just like the image and background URLs.
+  audio.src=tracks[idx].src;
+  audio.load();
+  setStatus('LOADING');
+}
+async function load(i,autoplay=false){
+  setTrackSource(i);
+  if(!autoplay){setStatus('READY');return;}
+  try{
+    await audio.play();
+  }catch(err){setStatus(playbackErrorMessage(err));}
+}
+async function startPlayback(){
+  manuallyStopped=false;
+  try{
+    if(!audio.getAttribute('src'))setTrackSource(idx);
+    if(audio.ended){try{audio.currentTime=0;}catch(_err){}}
+    await audio.play();
+  }catch(err){setStatus(playbackErrorMessage(err));}
+}
+function updatePlayButton(playing){
+  playBtn.textContent=playing?'Ⅱ':'▶';
+  playBtn.setAttribute('aria-label',playing?'Pause':'Play');
+  playBtn.title=playing?'Pause':'Play';
+}
+function getNextIndex(automatic=false){
+  if(shuffleEnabled){
+    if(shuffleCursor<shuffleHistory.length-1){shuffleCursor++;return shuffleHistory[shuffleCursor];}
+    let candidates=tracks.map((_,i)=>i).filter(i=>i!==idx&&!shufflePlayed.has(i));
+    if(candidates.length===0){
+      if(automatic&&loopMode==='off')return null;
+      shufflePlayed=new Set([idx]);
+      candidates=tracks.map((_,i)=>i).filter(i=>i!==idx);
+    }
+    if(!candidates.length)return idx;
+    const chosen=candidates[Math.floor(Math.random()*candidates.length)];
+    shuffleHistory=shuffleHistory.slice(0,shuffleCursor+1);
+    shuffleHistory.push(chosen); shuffleCursor++;
+    shufflePlayed.add(chosen);
+    return chosen;
+  }
+  if(automatic&&idx===tracks.length-1&&loopMode==='off')return null;
+  return (idx+1)%tracks.length;
+}
+function nextTrack(automatic=false){
+  const target=getNextIndex(automatic);
+  if(target===null){setStatus('FINISHED');updatePlayButton(false);return;}
+  const shouldPlay=!audio.paused||automatic;
+  load(target,shouldPlay);
+}
+function previousTrack(){
+  const shouldPlay=!audio.paused&&!audio.ended;
+  if(shuffleEnabled){
+    if(shuffleCursor>0){shuffleCursor--;load(shuffleHistory[shuffleCursor],shouldPlay);return;}
+    const target=(idx-1+tracks.length)%tracks.length;
+    load(target,shouldPlay);
+    shuffleHistory.unshift(target);shuffleCursor=0;shufflePlayed.add(target);return;
+  }
+  load(idx-1,shouldPlay);
+}
+playBtn.addEventListener('click',()=>{if(audio.paused)startPlayback();else audio.pause();});
+stopBtn.addEventListener('click',()=>{
+  manuallyStopped=true;audio.pause();
+  try{audio.currentTime=0;}catch(_err){}
+  seek.value='0';elapsed.textContent='0:00';setStatus('STOPPED');updatePlayButton(false);
+});
+$('next').addEventListener('click',()=>nextTrack(false));
+$('prev').addEventListener('click',previousTrack);
+loopBtn.addEventListener('click',()=>{
+  loopMode=loopMode==='all'?'one':loopMode==='one'?'off':'all';
+  syncLoopButton();
+});
+shuffleBtn.addEventListener('click',()=>{
+  shuffleEnabled=!shuffleEnabled;resetShuffleHistory();syncShuffleButton();
+});
+muteBtn.addEventListener('click',()=>{audio.muted=!audio.muted;icon();});
+vol.addEventListener('input',()=>{
+  audio.volume=Number(vol.value)/100;
+  if(audio.volume>0)audio.muted=false;
+  icon();
+});
+function applySeek(){
+  if(Number.isFinite(audio.duration)&&audio.duration>0){
+    audio.currentTime=Number(seek.value)/1000*audio.duration;
+  }
+}
+seek.addEventListener('pointerdown',()=>{isSeeking=true;});
+seek.addEventListener('pointerup',()=>{applySeek();isSeeking=false;});
+seek.addEventListener('keydown',()=>{isSeeking=true;});
+seek.addEventListener('keyup',()=>{applySeek();isSeeking=false;});
+seek.addEventListener('input',()=>{
+  if(Number.isFinite(audio.duration)&&audio.duration>0){
+    elapsed.textContent=fmt(Number(seek.value)/1000*audio.duration);
+  }
+});
+seek.addEventListener('change',()=>{applySeek();isSeeking=false;});
+audio.addEventListener('play',()=>{manuallyStopped=false;updatePlayButton(true);setStatus('PLAYING');});
+audio.addEventListener('pause',()=>{
+  updatePlayButton(false);
+  if(manuallyStopped)setStatus('STOPPED');
+  else if(audio.currentTime>0&&!audio.ended)setStatus('PAUSED');
+});
+audio.addEventListener('loadstart',()=>setStatus('LOADING'));
+audio.addEventListener('canplay',()=>{if(audio.paused&&!manuallyStopped)setStatus('READY');});
+audio.addEventListener('waiting',()=>{if(!audio.paused)setStatus('BUFFERING');});
+audio.addEventListener('playing',()=>setStatus('PLAYING'));
+audio.addEventListener('loadedmetadata',()=>{duration.textContent=fmt(audio.duration);seek.value='0';});
+audio.addEventListener('timeupdate',()=>{
+  elapsed.textContent=fmt(audio.currentTime);
+  if(!isSeeking&&Number.isFinite(audio.duration)&&audio.duration>0){
+    seek.value=String(audio.currentTime/audio.duration*1000);
+  }
+});
+audio.addEventListener('ended',()=>{
+  if(loopMode==='one')return;
+  if(shuffleEnabled){nextTrack(true);return;}
+  if(idx===tracks.length-1&&loopMode==='off'){
+    setStatus('FINISHED');updatePlayButton(false);manuallyStopped=false;return;
+  }
+  load(idx+1,true);
+});
+audio.addEventListener('error',()=>{
+  if(audio.error&&audio.error.code===1)return;
+  const code=audio.error?audio.error.code:0;
+  const msg=code===4?'UNSUPPORTED AUDIO':code===3?'AUDIO DECODE ERROR':code===2?'AUDIO NETWORK ERROR':'AUDIO LOAD ERROR';
+  setStatus(msg);
+  statusEl.title='Could not load '+tracks[idx].src+'. Keep the assets folder beside index.html.';
+});
+audio.volume=Number(vol.value)/100;
+icon();syncLoopButton();syncShuffleButton();
+setTrackSource(0);setStatus('READY');
+</script>
+</body>
+</html>
